@@ -277,3 +277,7 @@ exports.book_update_post = [
         }
     }
 ];
+
+exports.booklist_search = function (req, res) {
+    //redender
+}
