@@ -10,13 +10,15 @@ block content
       label(for='name') Name:
       input#name.form-control(type='text' placeholder='Name' name='name' required='true' value=(undefined===users ? '' : users.name))
     div.form-group
-      label(for='gender') Gender:
-      select#gender.form-control(type='select', placeholder='Select Gender' name='gender' required='true' )
-        each gender, i in users.gender
-          option(value="i") #{gender}
-    div.form-group
       label(for='password') Password:
       input#password.form-control(type='text' placeholder='Password' name='password' value=(undefined===users ? '' : users.password) )
+    div.form-group
+      label(for='gender') Gender:
+      select#gender.form-control(type='select' placeholder='Select gender' name='gender' required='true')
+        option(value='Male') Male
+        option(value='Female') Female
+        option(value='Other') Other
+
     div.form-group
       label(for='introduce') Introduce:
       input#introduce.form-control(type='text' placeholder='Introduce' name='introduce' value=(undefined===users ? '' : users.introduce) )

@@ -123,4 +123,8 @@ router.get('/users/signup', users_controller.sign_up_get);
 // POST SIGN UP
 router.post('/users/signup', users_controller.sign_up_post);
 
+router.get('/users/signin', users_controller.sign_in_get);
+
+router.post('/users/signin', users_controller.sign_in_post);
+
 module.exports = router;

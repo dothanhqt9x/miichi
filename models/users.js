@@ -10,7 +10,7 @@ var Schema = mongoose.Schema
 // })
 
 var UsersSchema = new Schema({
-    email: { type: String, required: true, maxlength: 100},
+    email: { type: String, required: true, maxlength: 100, unique: true},
     name: { type: String, required: true, maxlength: 100},
     gender: {
         type: String,
