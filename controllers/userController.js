@@ -31,7 +31,7 @@ exports.sign_up_post = [
         } else {
             await user.save()
             const token = await user.generateAuthToken()
-            res.status(201).send({ user, token })
+            res.redirect('/');
             // user.save(function (err) {
 
                 
