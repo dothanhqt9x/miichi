@@ -6,12 +6,12 @@ block content
   form(method='POST' action='')
     div.form-group
       label(for='email') Email:
-      input#email.form-control(type='text' placeholder='Email' name='email' required='true' value=(undefined===users ? '' : users.email) )
+      input#email.form-control(type='text' placeholder='Email' name='email' required='true' value=(undefined===user ? '' : user.email) )
       label(for='name') Name:
-      input#name.form-control(type='text' placeholder='Name' name='name' required='true' value=(undefined===users ? '' : users.name))
+      input#name.form-control(type='text' placeholder='Name' name='name' required='true' value=(undefined===user ? '' : user.name))
     div.form-group
       label(for='password') Password:
-      input#password.form-control(type='text' placeholder='Password' name='password' value=(undefined===users ? '' : users.password) )
+      input#password.form-control(type='text' placeholder='Password' name='password' value=(undefined===user ? '' : user.password) )
     div.form-group
       label(for='gender') Gender:
       select#gender.form-control(type='select' placeholder='Select gender' name='gender' required='true')
@@ -21,7 +21,7 @@ block content
 
     div.form-group
       label(for='introduce') Introduce:
-      input#introduce.form-control(type='text' placeholder='Introduce' name='introduce' value=(undefined===users ? '' : users.introduce) )
+      input#introduce.form-control(type='text' placeholder='Introduce' name='introduce' value=(undefined===user ? '' : user.introduce) )
     button.btn.btn-primary(type='submit') Sign Up
   if errors 
     ul

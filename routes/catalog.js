@@ -1,12 +1,14 @@
 var express = require('express');
 var router = express.Router();
+var auth = require('../middleware/auth')
+
 
 // Require controller modules.
 var book_controller = require('../controllers/bookController');
 var author_controller = require('../controllers/authorController');
 var genre_controller = require('../controllers/genreController');
 var book_instance_controller = require('../controllers/bookinstanceController');
-var users_controller = require('../controllers/usersController')
+var user_controller = require('../controllers/userController')
 
 /// BOOK ROUTES ///
 
@@ -14,10 +16,10 @@ var users_controller = require('../controllers/usersController')
 router.get('/', book_controller.index);
 
 // GET request for creating a Book. NOTE This must come before routes that display Book (uses id).
-router.get('/book/create', book_controller.book_create_get);
+router.get('/book/create', auth , book_controller.book_create_get);
 
 // POST request for creating Book.
-router.post('/book/create', book_controller.book_create_post);
+router.post('/book/create', auth ,  book_controller.book_create_post);
 
 // GET request to delete Book.
 router.get('/book/:id/delete', book_controller.book_delete_get);
@@ -40,10 +42,10 @@ router.get('/books', book_controller.book_list);
 /// AUTHOR ROUTES ///
 
 // GET request for creating Author. NOTE This must come before route for id (i.e. display author).
-router.get('/author/create', author_controller.author_create_get);
+router.get('/author/create',auth ,  author_controller.author_create_get);
 
 // POST request for creating Author.
-router.post('/author/create', author_controller.author_create_post);
+router.post('/author/create',auth , author_controller.author_create_post);
 
 // GET request to delete Author.
 router.get('/author/:id/delete', author_controller.author_delete_get);
@@ -66,10 +68,10 @@ router.get('/authors', author_controller.author_list);
 /// GENRE ROUTES ///
 
 // GET request for creating a Genre. NOTE This must come before route that displays Genre (uses id).
-router.get('/genre/create', genre_controller.genre_create_get);
+router.get('/genre/create',auth , genre_controller.genre_create_get);
 
 //POST request for creating Genre.
-router.post('/genre/create', genre_controller.genre_create_post);
+router.post('/genre/create',auth, genre_controller.genre_create_post);
 
 // GET request to delete Genre.
 router.get('/genre/:id/delete', genre_controller.genre_delete_get);
@@ -92,10 +94,10 @@ router.get('/genres', genre_controller.genre_list);
 /// BOOKINSTANCE ROUTES ///
 
 // GET request for creating a BookInstance. NOTE This must come before route that displays BookInstance (uses id).
-router.get('/bookinstance/create', book_instance_controller.bookinstance_create_get);
+router.get('/bookinstance/create',auth, book_instance_controller.bookinstance_create_get);
 
 // POST request for creating BookInstance. 
-router.post('/bookinstance/create', book_instance_controller.bookinstance_create_post);
+router.post('/bookinstance/create',auth, book_instance_controller.bookinstance_create_post);
 
 // GET request to delete BookInstance.
 router.get('/bookinstance/:id/delete', book_instance_controller.bookinstance_delete_get);
@@ -118,13 +120,13 @@ router.get('/bookinstances', book_instance_controller.bookinstance_list);
 /// USERS ROUTE ///
 
 // GET SIGN UP
-router.get('/users/signup', users_controller.sign_up_get);
+router.get('/users', user_controller.sign_up_get);
 
 // POST SIGN UP
-router.post('/users/signup', users_controller.sign_up_post);
+router.post('/users', user_controller.sign_up_post);
 
-router.get('/users/signin', users_controller.sign_in_get);
+router.get('/users/signin', user_controller.sign_in_get);
 
-router.post('/users/signin', users_controller.sign_in_post);
+router.post('/users/signin', user_controller.sign_in_post);
 
 module.exports = router;
