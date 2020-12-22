@@ -1,0 +1,16 @@
+extends layout
+
+block content
+
+  h1= title
+  
+  div(style='margin-left:20px;margin-top:20px')
+
+    h4 User
+    
+    dl 
+      dd Tên tài khoản: #{user.name}
+      dd Email của tài khoản: #{user.email}
+      dd My introduce: #{user.introduce} 
+    p
+      a(href=user.url) Update Introduce

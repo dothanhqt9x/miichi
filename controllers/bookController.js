@@ -44,6 +44,28 @@ exports.book_list = function(req, res, next) {
       
   };
 
+exports.book_list_search = function (req, res, next) {
+    var str = {};
+    const searchChar = req.body.search;
+    console.log(searchChar);
+    Book.find({}, 'title author')
+        .populate('author')
+        .exec(function (err, list_books) {
+            if (err) { return next(err); }
+            var i = 0;
+            list_books.forEach(book => {
+                str = book.title + book.author.first_name + book.author.family_name
+                console.log(str);
+                var n = str.search(searchChar);
+                console.log(n);
+                if(n < 0) list_books.splice(i,1)
+                i = i + 1
+            })
+            res.render('book_list', { title: 'Book List', book_list: list_books });
+        })
+}
+
+
 // Display detail page for a specific book.
 exports.book_detail = function(req, res, next) {
 
@@ -262,7 +284,7 @@ exports.book_update_post = [
                     if (book.genre.indexOf(results.genres[i]._id) > -1) {
                         results.genres[i].checked='true';
                     }
-                }
+                }   
                 res.render('book_form', { title: 'Update Book',authors: results.authors, genres: results.genres, book: book, errors: errors.array() });
             });
             return;

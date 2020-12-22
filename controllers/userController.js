@@ -1,6 +1,9 @@
 const { body, validationResult } = require('express-validator');
+var jwt = require('jsonwebtoken')
 // const users = require('../models/users');
 var User = require('../models/user')
+var bcrypt = require('bcrypt');
+const user = require('../models/user');
 
 exports.sign_up_get = function (req, res, next) {
     res.render('sign_up_form', { title: 'Sign Up'});
@@ -17,72 +20,83 @@ exports.sign_up_post = [
         const errors = validationResult(req);
 
         var user = new User(
-            {
-                email: req.body.email,
-                name: req.body.name,
-                gender: req.body.gender,
-                password: req.body.password,
-                introduce: req.body.introduce
-            });
-    
+            req.body
+        )
+
+        const userDataValidate = {
+            email : user.email,
+            password : user.password
+        }
+
+
+
         if(!errors.isEmpty()){
             res.render('sign_up_form', { title: 'Sign Up', user: req.body, errors: errors.array() });
             return;
         } else {
-            await user.save()
-            const token = await user.generateAuthToken()
-            res.redirect('/');
-            // user.save(function (err) {
-
-                
-            //     if (err) { return next(err); }
-            //     const token = user.generateAuthToken()  // update xoa await
-            //     res.status(201).render('index', { title: 'Đăng nhập thành công', data: data })
-            //     // Successful - redirect to new author record.
-            //     res.redirect('/'); // need redirect to home page
-            // });
+            await user.save() 
+            const accessToken = await jwt.sign({userDataValidate}, process.env.JWT_KEY)
+            res.cookie('token', accessToken)
+            
+            res.render('profile_form', {title: 'Users', user: user})
         }
 
     }
 ];
 
 exports.sign_in_get = function (req, res, next) {
+
     //render
     res.render('sign_in_form', { title: 'Sign In'});
 }
 
 exports.sign_in_post = [
-    // (req, res, next) => {
-    //     Users.findOne({ email: req.body.email }).then(
-    //         (users) => {
-    //             if(!users) {
-    //                 res.render('sign_in_form', { title: 'Sign In user not found'});
-    //             }
-    //             if (req.body.password === users.password) {
-    //                 res.redirect('/');
-    //             } else {
-    //                 res.render('sign_in_form', { title: 'Sign pw or user error'});
-    //             }
-    //         }
-    //     );
-        
-    // }
-    async(req, res) => {
-        //Login a registered user
-        try {
-            const { email, password } = req.body
-            const user = await User.findByCredentials(email, password)
-            if (!user) {
-                return res.status(401).send({error: 'Login failed! Check authentication credentials'})
-            }
-            const token = await user.generateAuthToken()
-            res.render('sign_in_form',{ title: 'Đăng nhập thành công' })
-        } catch (error) {
-            res.status(400).send(error)
+    
+    async (req, res, next) => {
+        const userData = {
+            email: req.body.email,
+            password: req.body.password,
         }
+
+        // login acc
+        const user = await User.findOne({email: req.body.email})
+        // console.log(req.body.password);
+        // console.log(user);
+        if(!user) return res.status(422).send('Email or PW không đúng')
+        const isPassword = await bcrypt.compare(req.body.password, user.password)
+        console.log(isPassword);
+        if(!isPassword) return res.status(422).send('Email or Pw không đúng')
+
+        const accessToken = await jwt.sign({userData}, process.env.JWT_KEY)
+        console.log(accessToken);
+        res.cookie('token', accessToken)
+
+        res.render('profile_form', {title: 'Users', user: user})
+
     }
 ]
 
-exports.profiles = function (req, res) {
-    // render
+exports.user_update_get = function (req, res, next) {
+    User.find({_id: req.params.id}).then((user)=>{
+        console.log(user)
+        res.render('user_form', { title: 'Update Introduce', user : user});
+    })
+   
+}
+
+exports.user_update_post = async function(req,res,next){
+   
+    let tempUser ={};
+    await User.find({_id:req.params.id}).then((user)=>{
+        user[0].introduce=req.body.introduce;
+        tempUser = user[0]; 
+        //console.log(user[0]);
+    }).catch(next);
+
+    await User.updateOne({_id:req.params.id},tempUser).then(()=>{
+        console.log(user);
+        res.render('profile_form', {title: 'Users', user : tempUser})   
+    }).catch(next);
+
+    
 }
